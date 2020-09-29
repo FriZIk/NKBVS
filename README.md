@@ -1,0 +1,2 @@
+# YoctoBuilds
+Учебные сборки Yocto
