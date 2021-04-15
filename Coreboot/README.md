@@ -206,3 +206,33 @@ config TEST_SECONDARY_PAYLOAD
 5. У меня есть вопрос что такое BootMedium, гугл ничего не говорит, wiki по coreboot такого определения тоже не знает, поэтому я не могу понять что это.
 
 6. Какой итоговый конфигуратор должен получится? Я так понимаю, что он должен уметь редактирвоать параметры из nvramcui, иметь возможность загружать после себя дополнительные payload, как bayou, а так же устанавливать порядок загрузки жёстких дисков(или не дисков, или не жёстких), я правильно всё понимаю?  
+
+
+Поменять tinyCurses на mdСurses (лоховской на поцанский)
+
+seabios -> post.c -> maininit -> interactive_bootmenu();
+coreinfo -> coreinfo.c -> print_submenu();
+pci_moudle -> Пример корректной работы форм
+
+
+
+
+15.04.2021
+1. home/vxuser/coreboot/payloads/external/SeaBIOS/seabios/src/post.c maininit(void) -> interface_init()
+2. interface_init(void) -> boot_init();
+3. home/vxuser/coreboot/payloads/external/SeaBIOS/seabios/src/boot.c boot_init(void) -> loadBoorOrder()
+4. loadBootOrder - загружает bootmedium
+5. Для нахождения доступных методов загрузки нужно смотреть лог запуска SeaBios, в частности строки Searching Bootorder for <pci@.....>
+6. Включение отладки для получения этого лога
+    ```
+    sudo apt install python3-pip
+    pip3 install pyserial
+    sudo readserial.py /dev/ttyS0 115200
+    mkfifo qemudebugpipe
+    make menuconfig # debug -> debug_level = 8
+
+    qemu -chardev pipe,path=qemudebugpipe,id=seabios -device isa-debugcon,iobase=0x402,chardev=seabios ...
+    qemu-system-x86_64 -bios build/coreboot.rom
+
+    ./readserial.py -nf qemudebugpipe
+    ```
