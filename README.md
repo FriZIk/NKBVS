@@ -321,3 +321,117 @@ pci_moudle -> Пример корректной работы форм
 4. Читаем приоритет в interactive_bootmenu(void) в seabios/boot.c. Нужно только понять как прочесть информацию из ромфайлов. Как задавать приоритет разберёмся потом, сейчас просто прочитать test_value из cmos
 
 5. Для упрощения создадим 2 переменные, если значение первой будет равно 1, то грузимся с первого диска, если у второй, то со второго. Потом сделаем по человечески какой-то список, пока что так будет максимально просто и понятно.
+
+14.07.2021
+1. Подитожим всё что мы поняли, чтобы задать корректный вопрос. NVRAMcui модуль записывает данные в cmos ипользуя вызов функции set_option_from_string(use_nvram, opttbl, value, "test_value") из библиотеки libpayload. Параметн cb_cmos_option_table *opttbl = это таблица параметров cmos в cbfs. Понятно как пишет и читает данные nvramcui. Теперь надо понять как эти действия делает SeaBIOS.
+
+2. В функции loadBootOrder происходит чтение rom-файла bootorder. Вопрос в том как соотносится вот этот rom-файл и cbfs с optiontablom в который пишет nvramcui.
+
+3. Короче всё изменилось, оказывается что loadBootOrder это чтение того самого файла bootorder.txt из примеров, оно нам не надо. 
+
+4. Так как SeaBIOS не имеет стандартных средств для лёгкого чтения cbfs в отличие от nvramcui, поэтому я не буду с ним работать совсем, просто допишу тулзу интегрированную в coreinfo выпилю из неё всякий кал и сдам задачу.
+
+5. Создал новую фигню, 2 модуля bootorder_module.c и configurator_module
+6. Подключил их в Makefile следующим образом: 
+
+```
+    OBJECTS = cpuinfo_module.o cpuid.S.o pci_module.o coreboot_module.o \
+	bootorder_module.o configurator_module.o bootlog_module.o ramdump_module.o \
+	multiboot_module.o cbfs_module.o timestamps_module.o coreinfo.o
+```
+
+И в coreinfo добавил селдующие строки:
+
+```
+/ My code
+extern struct coreinfo_module configurator_module;
+extern struct coreinfo_module bootorder_module;
+
+struct coreinfo_module *configurator_modules[] = {
+#if CONFIG(MODULE_NVRAM)
+	&configurator_module,
+#endif
+};
+
+struct coreinfo_module *bootorder_modules[] = {
+#if CONFIG(MODULE_NVRAM)
+	&bootorder_module,
+#endif
+};
+// end of my code
+```
+
+А так же при объявлении структуры
+```
+struct coreinfo_cat {
+	char name[15];
+	int cur;
+	int count;
+	struct coreinfo_module **modules;
+} categories[] = {
+	{
+		.name = "System",
+		.modules = system_modules,
+		.count = ARRAY_SIZE(system_modules),
+	},
+	{
+		.name = "Firmware",
+		.modules = firmware_modules,
+		.count = ARRAY_SIZE(firmware_modules),
+	},
+	{
+		.name = "Configurator",
+		.modules = configurator_modules,
+		.count = ARRAY_SIZE(configurator_modules),
+	},
+	{
+		.name = "Bootorder",
+		.modules = bootorder_modules,
+		.count = ARRAY_SIZE(bootorder_modules),
+	}
+};
+```
+
+Далее необходимо было отредактировать каждый из модулей в соответсвии с их названием. Соответственно получилось:
+
+```
+static int bootorder_module_init(void)
+{
+	return 0;
+}
+
+struct coreinfo_module bootorder_module = {
+	.name = "BOOTORDER",
+	.init = bootorder_module_init,
+	.redraw = bootorder_module_redraw,
+};
+
+#else
+
+struct coreinfo_module bootorder_module = {
+};
+```
+
+и Двас:
+
+```
+static int configurator_module_init(void)
+{
+	return 0;
+}
+
+struct coreinfo_module configurator_module = {
+	.name = "CONFIGURATOR",
+	.init = configurator_module_init,
+	.redraw = configurator_module_redraw,
+};
+
+#else
+
+struct coreinfo_module configurator_module = {
+};
+```
+
+Так же должны быть переименованы все функции в соответствии с name,init и redraw
+
+7. Жестковато это всё конечно, теперь надо выпилить весь ненужный контент. Но предварительно необходимо отредактирвоать cmos.layout
