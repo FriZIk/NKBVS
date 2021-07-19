@@ -525,3 +525,54 @@ static int check_pattern(char *str, char *pattern)
 ```
 
 7. Дома буду дальше делать на выходных, дольше всего я кажется буду с окошками этими мучаться, надеюсь что всё таки за выходные с ними разбирусь, как было бы классно сдать задачу в понедельник, просто офигенно.
+
+19.07.2021
+1. Выходные кончились, сегодня буду дописывать второй модуль и дальше останется только баги интерфейса пофикисить и всё. Но надо ещё для Волошина фигню поправить, наверное ею сначала займусь.
+
+2. Условия которые я записад для configurator_module:
+
+```
+	int check = check_pattern((char*)(option->name),"CFG");
+		while ((option->config == 'r') || (check == 0) ||
+			   (strcmp("check_sum", (char *)option->name) == 0)) {
+			option = next_cmos_entry(option);
+		}
+```
+
+```
+static int count_cmos_options(struct cb_cmos_entries *option, int *numopts,
+		int *maxlength)
+{
+	int n_opts = 0;
+	int max_l = 0;
+
+	while (option) 
+	{
+		// Skip unnecessary registers and enumerations
+		int check = check_pattern((char*)(option->name),"CFG"); 
+
+		if ((option->config != 'r') && 
+			(check != 0) &&
+		    (strcmp("check_sum", (char *)option->name) != 0)) {
+			max_l = max(max_l, strlen((char *)option->name));
+			n_opts++;
+		}
+
+		option = next_cmos_entry(option);
+	}
+
+	if (n_opts == 0) {
+		printf("NO CMOS OPTIONS FOUND. EXITING!!!");
+		return -1;
+	}
+
+	*numopts = n_opts;
+	*maxlength = max_l;
+
+	return 0;
+}
+```
+
+3. Вообщем начал править, думаю завтра уже что-то получится сделать, буду основываться на cbfs_module и каких-то базвых вещах ncurses.
+
+4. Надо завтра будет написать функцию для сравнения прошлых и нынешних приоритетов, чтобы вся ситема автоматически подстаивалась под приоритет одного элемента.
