@@ -575,4 +575,95 @@ static int count_cmos_options(struct cb_cmos_entries *option, int *numopts,
 
 3. Вообщем начал править, думаю завтра уже что-то получится сделать, буду основываться на cbfs_module и каких-то базвых вещах ncurses.
 
-4. Надо завтра будет написать функцию для сравнения прошлых и нынешних приоритетов, чтобы вся ситема автоматически подстаивалась под приоритет одного элемента.
+4. Надо завтра будет написать функцию для сравнения прошлых и нынешних приоритетов, чтобы вся ситема автоматически подстаивалась под приоритет одного элемента. 
+
+20.07.2021
+
+1. Надо перед каждым изменением приоритеты проверять и менять, сейчас попробую это сделать.
+
+2. Заводим переменную для хранения номера изменённого операнда, потом проходим каждое изменение положения(поля) по циклу из всех трёх опернадов и относительно нмоера понимаем, что другой номер с таким же приоритетом теперь явялется вторым и тд
+
+3. Просто весь день по сути интерфейс пилил, функцию эту смены не сделал, наверное сделаю завтра, интерфейс получился ничего такой, добавил таблицу, никак не могу зафиксить эту ошибку когда всё вылетает в трубу при многократной перезагрузке, ну фиг знает судя по всему это какие-то проблемы внутреннего окна, но я не уверер.
+
+4. Исправленная отрисовка:
+
+```
+	// Вертикальная полоса 
+	for (int i = 1; i <  getmaxy(w); i++)
+		mvwaddch(w, i, getmaxx(w) - 15 , ACS_VLINE);
+
+	// Горизонатльная полоса
+	for (int i = 1;i < getmaxx(w) - 15; i++)
+		mvwaddch(w, getmaxy(w) - 5, i, ACS_HLINE);
+	
+	// Формируем таблицу
+	mvwprintw(w, getmaxy(w) - 4, 1, "Coomands:");
+	mvwprintw(w, getmaxy(w) - 4, 1, "1. Save boot priority - F(5);");
+	mvwprintw(w, getmaxy(w) - 3, 1, "2. Some functional);");
+	mvwprintw(w, getmaxy(w) - 2, 1, "3. Some functional);");
+
+	// Информационное поле 
+	char* info_buffer_for_HD = "Boot priority for Hard drive";
+	char* info_buffer_for_USB = "Boot priority for USB drive";
+	char* info_buffer_for_PXE = "Boot priority for PXE";
+
+	mvwprintw(w, 1, getmaxx(w) - 13, "Information");
+	for (int i = getmaxx(w) - 14;i < getmaxx(w); i++)
+		mvwaddch(w, 2, i, ACS_HLINE);
+
+	char *result_string="";
+	switch(Number)
+	{
+		case 0: result_string = info_buffer_for_HD; break;
+		case 1: result_string = info_buffer_for_USB; break;		
+		case 2: result_string = info_buffer_for_PXE; break;
+	}
+
+	int y_current = 3, x_current = getmaxx(w) - 14;
+	for(size_t i = 0;i < strlen(result_string);i++)
+	{
+		if(x_current == getmaxx(w)) 
+		{
+			y_current++;
+			x_current = getmaxx(w) - 14;
+		}
+		mvwprintw(w, y_current, x_current, "%c", result_string[i]);
+		x_current++;
+	}
+
+	// Надо буфер чистить каждый раз перед тем как новую строку забивать
+```
+
+5. Так же добавил счётчик для корректного "перелистывания"
+
+```
+	case KEY_DOWN:
+			form_driver(form, REQ_NEXT_FIELD);
+			if(i < numopts - 1)i++;
+			else i = 0;
+			break;
+	case KEY_UP:
+			form_driver(form, REQ_PREV_FIELD);
+			if(i > 0)i--;
+			else i = numopts - 1;
+			break;
+```
+
+6. Добавил F5 для принудительного сохранения, не знаю работает или нет ну вроде работает. Хотя хз.
+
+```
+/* Save configuration */
+static void save_configuration(FIELD **fields, int numopts, struct cb_cmos_option_table *opttbl)
+{
+	for (int i = 0; i < numopts; i++) {
+		char *name = field_buffer(fields[2 * i], 0);
+		char *value = field_buffer(fields[2 * i + 1], 0);
+		char *ptr;
+		for (ptr = value + strlen(value) - 1;
+		     ptr >= value && *ptr == ' '; ptr--)
+			;
+		ptr[1] = '\0';
+		set_option_from_string(use_nvram, opttbl, value, name);
+	}
+}
+```
