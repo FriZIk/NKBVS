@@ -667,3 +667,61 @@ static void save_configuration(FIELD **fields, int numopts, struct cb_cmos_optio
 	}
 }
 ```
+
+21.07.2021
+1. Надо за сегодня сделать смену приоритетов, может быть ещё немного GUI причесать.
+2. Скорее всего у меня там лютая утечка памяти какая-то, возможно из-за выделения памяти на формочки без их отчистки, сейчас приделаю отчистку и посмотрим.
+3. Надо дома жёстко ещё порисовать в этом вашем ncurses прямо дофига программ написать с гуем, потому что я не понимаю, почему ничего не работает. 
+4. Программу с приоритетами надо бы дописать навернео. Поэтому листинг прикладываю:
+
+```
+#include <stdio.h>
+
+#define array_len_prior 3
+#define array_second 2 
+
+
+int main()
+{
+    // Array for prior
+    int a[array_len_prior][array_second];
+
+    // Default number
+    a[0][0] = 1;
+    a[0][1] = 2;
+    a[0][2] = 3;
+
+    // Default prior
+    a[1][0] = 1;
+    a[1][1] = 2;
+    a[1][2] = 3;
+
+    // Number of change func
+    int number_of_change;
+    int new_prior;
+    // Change prior func
+    while(1)
+    {
+        printf("\n---------------------------------------------------\n");
+        printf("Исходные приоритеты:\n");
+
+        for(int i = 0; i < array_len_prior; i++)
+            printf("%d(%d) ",a[0][i],a[1][i]);
+        
+        printf("\nПорядковый номер параметра для изменения:");
+        scanf("%d",&number_of_change);
+        printf("Новый приоритет:");
+        scanf("%d",&new_prior);
+
+        int old_prior = a[1][number_of_change - 1];
+        a[1][number_of_change-1] = new_prior;
+
+        for(int i = 0;i < )
+
+        // В скобках приоритет
+        for(int i = 0; i < array_len_prior; i++)
+                    printf("%d(%d) ",a[0][i],a[1][i]);
+    }
+    return 0;
+}
+```
