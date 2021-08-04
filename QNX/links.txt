@@ -38,3 +38,59 @@ int main(void)
 	1. https://www.cta.ru/cms/f/352129.pdf
 	2. https://www.swd.ru/print.php3?pid=984
 	3. https://osdev.fandom.com/ru/wiki/%D0%93%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F (Наверное мастхев по теории, но надо ещё 		посмотреть)
+
+04.08.2021
+1. Ну поразбирался сегодня немного, ряд интерсных вещей и ссылок нашёл, надо их сюда по возможности побольше прикрепить.
+2 Ссылки на интересные материалы:
+	http://forum.kpda.ru/index.php/topic,1546.0.html
+	http://www.qnx.com/developers/docs/6.5.0/index.jsp?topic=%2Fcom.qnx.doc.neutrino_lib_ref%2Fp%2Fpci_find_device.html
+	http://www.qnx.com/developers/docs/qnxcar2/index.jsp?topic=%2Fcom.qnx.doc.neutrino.sys_arch%2Ftopic%2Fipc_mmap.html
+	http://www.qnx.com/developers/docs/6.5.0/index.jsp?topic=%2Fcom.qnx.doc.neutrino_lib_ref%2Fp%2Fpci_attach_device.html&anchor=DevInfo
+	http://www.qnx.com/developers/docs/qnxcar2/index.jsp?topic=%2Fcom.qnx.doc.neutrino.utilities%2Ftopic%2Fp%2Fpci.html
+	https://pci-ids.ucw.cz/read/PC/1022/2000
+	https://wiki.debian.org/DeviceDatabase/PCI
+	https://pcisig.com/membership/member-companies?combine=
+3. В целом начал писать какой-то код, вышло что-то вот такое:
+```
+#include <hw/pci.h>
+#include <hw/pci_devices.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main( void )
+{
+    int pidx;
+    int phdl;
+    struct pci_dev_info inf;
+
+    /* Connect to the PCI server */
+    phdl = pci_attach( 0 );
+    if( phdl == -1 ) {
+        fprintf( stderr, "Unable to initialize PCI\n" );
+
+        return EXIT_FAILURE;
+    }
+
+    /* Initialize the pci_dev_info structure */
+    memset( &inf, 0, sizeof( inf ) );
+    pidx = 0;
+    inf.VendorId = 0x8086;
+    inf.DeviceId = 0x2415;
+
+    fprintf(stdout, "VendorId:%x\nDeviceId:%x\n", inf.VendorId, inf.DeviceId);
+
+    unsigned int devfunc, bus;
+    int status = pci_find_device(inf.DeviceId, inf.VendorId, pidx, &bus, &devfunc);
+    if (status == PCI_SUCCESS) // Если устройство найдено, то пытаемся подконектиться
+    {
+    	fprintf(stdout,"Device is exist");
+    	hdl = pci_attach_device( NULL, PCI_INIT_ALL, pidx, &inf);
+    }
+    else
+    {
+    	fprintf(stdout,"Device not found");
+    }
+    return EXIT_SUCCESS;
+}
+```
+4. Пока что всё, потом вечером, может быть, ещё что-то поделаю.
