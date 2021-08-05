@@ -94,3 +94,106 @@ int main( void )
 }
 ```
 4. Пока что всё, потом вечером, может быть, ещё что-то поделаю.
+
+05.08.2021
+1. Ничего я вечером не делал, то Волошин со своими солнечными батареями, то я сам сижу уже и ничего не хочу. Итог один, я ничего не делал.
+2. Зато сегодня достаточно неплохо углубился в тему pci. Получилось подконектиться к устройству ethernet-контроллера и вытащить из него данные. Код приложу сюда, но не сейчас, может быть ещё что-то получится написать. В целом могу сказать, что разработка идёт намного бодрее чем с биосом, так как есть об этом хоть какая-то инфомрация в интернете.
+
+```
+#include <hw/pci.h>
+#include <hw/pci_devices.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int main( void )
+{
+    int pidx;
+    int phdl;
+    struct pci_dev_info pci_info;
+
+    /* Connect to the PCI server */
+    phdl = pci_attach(0);
+    if( phdl == -1 ) {
+        fprintf( stderr, "Unable to initialize PCI\n" );
+
+        return EXIT_FAILURE;
+    }
+
+    /* Initialize the pci_dev_info structure */
+    memset( &pci_info, 0, sizeof(pci_info) );
+    pidx = 0;
+
+    /* VendorId and DeviceId for network controller */
+    pci_info.VendorId = 0x1022;
+    pci_info.DeviceId = 0x2000;
+
+    fprintf(stdout, "VendorId:%x\nDeviceId:%x\n", pci_info.VendorId, pci_info.DeviceId);
+
+    unsigned int devfunc, bus;
+    int status = pci_find_device(pci_info.DeviceId, pci_info.VendorId, pidx, &bus, &devfunc);
+
+    /* Handles for attach to device */
+    void* pci_dev_hdl;
+    void* retval;
+
+    if (status == PCI_SUCCESS)
+    {
+    	fprintf(stdout,"\nDevice is exist!\n");
+    	/* Work with to attaches */
+    	pci_dev_hdl = pci_attach_device( NULL, 0, pidx, &pci_info);
+    	if(pci_dev_hdl == NULL)
+    	{
+    		fprintf(stderr,"Error attach device");
+    	}
+    	else
+    	{
+    		fprintf(stdout,"PCI_attach_device good!\n");
+    		retval = pci_attach_device(pci_dev_hdl, PCI_INIT_ALL, pidx, &pci_info);
+    		if(retval == NULL)
+    		{
+    			fprintf( stderr, "Unable allocate resources\n" );
+    		}
+    		else
+    		{
+    			fprintf(stdout, "Recourses allocate successfully!\n");
+
+    			/* Summary information about device */
+    			fprintf(stdout, "\nSUMMARY DEVICE INFO:\n");
+    			fprintf(stdout, "Device_ID = 0x%x\n", pci_info.DeviceId);
+    			fprintf(stdout, "Vendor_ID = 0x%x\n", pci_info.VendorId);
+    			fprintf(stdout, "Bus Number = 0x%x\n", pci_info.BusNumber);
+    			fprintf(stdout, "Device Function = 0x%x\n", pci_info.DevFunc);
+    			fprintf(stdout, "Device Class = 0x%x\n", pci_info.Class);
+    			fprintf(stdout, "Device IRQ = 0x%x(%d)\n", pci_info.Irq);
+    			fprintf(stdout, "MSI REG = 0x%x\n", pci_info.msi);
+    		}
+    		pci_detach_device(pci_dev_hdl);
+    	}
+    }
+    else
+    {
+    	fprintf(stdout,"Device not found");
+    }
+    pci_detach( phdl );
+    return EXIT_SUCCESS;
+}
+```
+3. То что выводит программа:
+	```
+	VendorId:1022
+	DeviceId:2000
+
+	Device is exist!
+	PCI_attach_device good!
+	Recourses allocate successfully!
+
+	SUMMARY DEVICE INFO:
+	Device_ID = 0x2000
+	Vendor_ID = 0x1022
+	Bus Number = 0x0
+	Device Function = 0x18
+	Device Class = 0x20000
+	Device IRQ = 0x9(134510924)
+	MSI REG = 0x0
+
+	```
