@@ -139,7 +139,7 @@ int main( void )
     if (status == PCI_SUCCESS)
     {
     	fprintf(stdout,"\nDevice is exist!\n");
-    	/* Work with to attaches */
+    	/* Work with two attaches */
     	pci_dev_hdl = pci_attach_device( NULL, 0, pidx, &pci_info);
     	if(pci_dev_hdl == NULL)
     	{
@@ -166,6 +166,8 @@ int main( void )
     			fprintf(stdout, "Device Class = 0x%x\n", pci_info.Class);
     			fprintf(stdout, "Device IRQ = 0x%x(%d)\n", pci_info.Irq);
     			fprintf(stdout, "MSI REG = 0x%x\n", pci_info.msi);
+    			fprintf(stdout, "CPU base address = 0x%x\n", pci_info.CpuBaseAddress);
+    			fprintf(stdout, "PCI base address = 0x%x\n", pci_info.PciBaseAddress);
     		}
     		pci_detach_device(pci_dev_hdl);
     	}
@@ -174,9 +176,10 @@ int main( void )
     {
     	fprintf(stdout,"Device not found");
     }
-    pci_detach( phdl );
+    pci_detach(phdl);
     return EXIT_SUCCESS;
 }
+
 ```
 3. То что выводит программа:
 	```
@@ -195,5 +198,11 @@ int main( void )
 	Device Class = 0x20000
 	Device IRQ = 0x9(134510924)
 	MSI REG = 0x0
-
+	CPU base address = 0x80479b4
+	PCI base address = 0x8047984
 	```
+06.08.2021
+Сегодня сидел просто статьи читал, в целом что-то стало яснее, по крайней мере в какую сторону копать.
+1. https://habr.com/ru/post/211751/
+2. https://tldp.org/LDP/lkmpg/2.6/html/lkmpg.html#AEN121
+3. http://forum.kpda.ru/index.php/topic,1546.0.html
