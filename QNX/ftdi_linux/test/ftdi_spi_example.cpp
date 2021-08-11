@@ -262,8 +262,6 @@ int main()
 
   for(;;)
   {
-
-  
     ftStatus = FT_CreateDeviceInfoList(&numDevs);
     if (ftStatus == FT_OK)
       printf("Number of devices is %d\n",numDevs);
@@ -403,8 +401,7 @@ static FTDI_SPI_retval __exch_rw
   return retval ;
 }
 
-// Поменял типы
-FTDI_SPI_retval rd_axi(FTDI_SPI_h handle, uint_least64_t addr, int_least64_t* p_val)
+FTDI_SPI_retval rd_axi(FTDI_SPI_h handle, uint_least32_t addr, uint_least32_t* p_val)
 {
   FTDI_SPI_retval retval = FTDI_SPI_retval_ok ; 
 
@@ -538,11 +535,10 @@ static int my_test()
       //} while(0) ; if (!retval) printf("ID=0x%04x\n",id) ; usleep(200) ; }
       //printf("ID=0x%04x\n",id) ;
 
-      // Поменял типы
-      typedef struct { int_least64_t addr ; int_least64_t val ; } Pair ;
+      typedef struct { uint_least32_t addr ; uint_least32_t val ; } Pair ;
       Pair rd_mas[] = 
       { 
-        { 0x000000 },
+        { 0x000000 },        
         { 0x000004 },
         { 0x000008 },
         { 0x00000c },
@@ -578,11 +574,12 @@ static int my_test()
         { 0x300314 },
         { 0x300300 },
         { 0x300304 },
+        
         // ������������ 
-        { ~0 }
+        { (uint_least32_t)-1 }
       } ;
 
-      for(int i=0 ; ~0 != rd_mas[i].addr ; ++i) 
+      for(int i=0 ; (uint_least32_t)-1 != rd_mas[i].addr ; ++i) 
       {
         if (FTDI_SPI_retval_ok != (retval = rd_axi(
           handle,rd_mas[i].addr,&rd_mas[i].val
@@ -623,10 +620,9 @@ static int my_test()
         { 0x300304, 0x80000000 },
         #endif
         // ������������ 
-        { ~0 }        
+        { (uint_least32_t)-1 }        
       } ;
-
-      for(int i=0 ; ~0 != wr_mas[i].addr ; ++i) 
+      for(int i=0 ; (uint_least32_t)-1 != wr_mas[i].addr ; ++i) 
       {
         if (FTDI_SPI_retval_ok != (retval = wr_axi(
           handle,wr_mas[i].addr,wr_mas[i].val
