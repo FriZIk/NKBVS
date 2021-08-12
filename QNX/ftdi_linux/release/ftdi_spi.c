@@ -8,7 +8,7 @@
 *
 *********************************************************************
 **/
-#include "../ftd2xx.h" // Библиотека для работы с ftdi
+#include "ftd2xx.h" // Библиотека для работы с ftdi
 #include "ftdi_spi.h"
 #include "ftdi_mpsse_code.h"
 #include <stdlib.h>

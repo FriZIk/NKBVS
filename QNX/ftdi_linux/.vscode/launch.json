@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++ - Сборка и отладка активного файла",
+            "name": "gcc - Сборка и отладка активного файла",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
@@ -22,7 +22,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++ сборка активного файла",
+            "preLaunchTask": "C/C++: gcc сборка активного файла",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ]

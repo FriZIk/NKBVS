@@ -15,8 +15,9 @@
 #include <string.h> // Для memset
 #include <stdint.h> // Для макросов
 
-#include "../ftd2xx.h" // Библиотека для работы с ftdi
 #include "ftdi_spi.h" 
+#include "ftd2xx.h"
+#include "WinTypes.h"
 
 #define BOOL bool
 
