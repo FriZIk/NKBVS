@@ -206,3 +206,15 @@ int main( void )
 1. https://habr.com/ru/post/211751/
 2. https://tldp.org/LDP/lkmpg/2.6/html/lkmpg.html#AEN121
 3. http://forum.kpda.ru/index.php/topic,1546.0.html
+
+23.08.2021
+Это было дольше чем я расчитывал, слишком много времени ушло на понимание и осознание всех вещей что на меня свались
+ссылки надо публиковать далее:
+1. https://forum.sparkfun.com/viewtopic.php?t=16477
+2. https://stackoverflow.com/questions/30088025/malloc-invalid-conversion-from-void-to-double
+3. Возникает ошибка 
+	```
+	if (FT_OK != FT_Open(param->inst_no,&ft_h))
+      	error(0x9A43C17FuL) ;
+      	```
+4. Может быть попробую попросить о помощи, потому что сам я не понимаю в чём ошибка.
