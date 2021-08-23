@@ -218,3 +218,11 @@ int main( void )
       	error(0x9A43C17FuL) ;
       	```
 4. Может быть попробую попросить о помощи, потому что сам я не понимаю в чём ошибка.
+5. Спрошу завтра, сегодня уже я что-то устал. Ещё немного ссылок:
+	https://eax.me/libftdi-bitbang/
+	https://www.usb-drivers.org/ftdi-usb-linux.html
+	https://community.nxp.com/t5/LPCXpresso-IDE/AMD64-Debian-Wheezy-Linux-Installation-Procedure/m-p/543736
+	http://we.easyelectronics.ru/electro-and-pc/biblioteka-ftd2xx-i-primer-ee-ispolzovaniya.html
+	https://habr.com/ru/post/211751/
+	https://eax.me/libftdi-bitbang/
+	
