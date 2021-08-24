@@ -226,3 +226,8 @@ int main( void )
 	https://habr.com/ru/post/211751/
 	https://eax.me/libftdi-bitbang/
 	
+	
+24.08.2021
+1. Ничего особо путного я не узнал, загуглил ошибку, пытаюсь найти что за код ошибки 3, нигде никаких списков нормально не могу найти, запарил меня этот FTDI.
+2. https://www.intra2net.com/en/developer/libftdi/download.php - тут можно libftdi скачать
+3. https://stackoverflow.com/questions/39176999/rs232-ftdi-ft-open-returns-ft-error-code-3 - единственое что пока нашёл по теме кодов ошибков в ftdi
