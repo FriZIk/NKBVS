@@ -206,3 +206,28 @@ int main( void )
 1. https://habr.com/ru/post/211751/
 2. https://tldp.org/LDP/lkmpg/2.6/html/lkmpg.html#AEN121
 3. http://forum.kpda.ru/index.php/topic,1546.0.html
+
+23.08.2021
+Это было дольше чем я расчитывал, слишком много времени ушло на понимание и осознание всех вещей что на меня свались
+ссылки надо публиковать далее:
+1. https://forum.sparkfun.com/viewtopic.php?t=16477
+2. https://stackoverflow.com/questions/30088025/malloc-invalid-conversion-from-void-to-double
+3. Возникает ошибка 
+	```
+	if (FT_OK != FT_Open(param->inst_no,&ft_h))
+      	error(0x9A43C17FuL) ;
+      	```
+4. Может быть попробую попросить о помощи, потому что сам я не понимаю в чём ошибка.
+5. Спрошу завтра, сегодня уже я что-то устал. Ещё немного ссылок:
+	https://eax.me/libftdi-bitbang/
+	https://www.usb-drivers.org/ftdi-usb-linux.html
+	https://community.nxp.com/t5/LPCXpresso-IDE/AMD64-Debian-Wheezy-Linux-Installation-Procedure/m-p/543736
+	http://we.easyelectronics.ru/electro-and-pc/biblioteka-ftd2xx-i-primer-ee-ispolzovaniya.html
+	https://habr.com/ru/post/211751/
+	https://eax.me/libftdi-bitbang/
+	
+	
+24.08.2021
+1. Ничего особо путного я не узнал, загуглил ошибку, пытаюсь найти что за код ошибки 3, нигде никаких списков нормально не могу найти, запарил меня этот FTDI.
+2. https://www.intra2net.com/en/developer/libftdi/download.php - тут можно libftdi скачать
+3. https://stackoverflow.com/questions/39176999/rs232-ftdi-ft-open-returns-ft-error-code-3 - единственое что пока нашёл по теме кодов ошибков в ftdi
