@@ -238,4 +238,10 @@ int main( void )
 3. Добавил юзера в dialout и  tty
 4. выяснил, что вероятно это конфликт драйвера ftdi и дефолтного линуксовово, сейчас попробую добавит ьег ов чёрный список для ядра и ребутнуться, надеюсь поможет.
 5. ``sudo rmmod usbserial`` Выдаёт следующий результат```rmmod: ERROR: Module usbserial is in use by: ch341```. Так же был успешно удалён ```sudo rmmod usbserial```. Полный список загруженных модулей ядра можно посомтрть так: lsmod
-6. Ребут, прокнем что будет.
+6. Ребут, прокнем что будет...  Получилось!!! Теперь я точно уверен что всё работает правильно, но вылетает по ошибке индексации, но это хотя бы проблема самой тулза а не драйвера, железки, чего бы то ни было.
+7. Ещё несколько ссылочек за сегодня, в частности в них объясняется как я дошёл до пунктов 5 и 6.
+8. https://stackoverflow.com/questions/33309486/disabling-linux-driver-for-arduino-issue
+9. https://stackoverflow.com/questions/33981056/ftdi-d2xx-conflict-with-ftdi-sio-on-linux-how-to-remove-ftdi-sio-automatically
+10. https://stackoverflow.com/questions/28461433/unable-to-open-a-connection-to-an-ftdi-device
+11. https://www.edaboard.com/threads/problem-with-d2xx-as-it-cant-open-jtag.127837/ - Проблема была немного другой и решилась правами.
+12. https://habr.com/ru/post/426131/ - Я в ней хотя бы вычитал где описания Error кодов искать.
