@@ -74,8 +74,6 @@ static FTDI_SPI_retval check_echo(FT_HANDLE ftHandle, uint_least8_t cmd)
     if (FT_OK != FT_GetQueueStatus(ftHandle, &xxx))
       error(0x7F5F6C4BuL);
 
-    
-
     //Read out the data from input buffer
     if (FT_OK != FT_Read(ftHandle,ack_buf,xxx,&dwNumBytesRead))
       error(0x132072D1uL); 
