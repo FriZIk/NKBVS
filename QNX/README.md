@@ -245,3 +245,8 @@ int main( void )
 10. https://stackoverflow.com/questions/28461433/unable-to-open-a-connection-to-an-ftdi-device
 11. https://www.edaboard.com/threads/problem-with-d2xx-as-it-cant-open-jtag.127837/ - Проблема была немного другой и решилась правами.
 12. https://habr.com/ru/post/426131/ - Я в ней хотя бы вычитал где описания Error кодов искать.
+
+27.08.2021
+1. https://vk.com/wall-54530371_146152
+2. https://www.litres.ru/anatoliy-levenchuk/sistemnoe-myshlenie/
+3. https://habr.com/ru/post/129202/
