@@ -81,7 +81,8 @@ static FTDI_SPI_retval check_echo(FT_HANDLE ftHandle, uint_least8_t cmd)
     if (xxx!=dwNumBytesRead)
       error(0x4470A118uL) ;
 
-    #if 1 // ������ ���� :-(
+    // Ошибка
+    #if 1 // другие команды :-(
     if (FTDI_BAD_ACK!=ack_buf[xxx-2])
       error(0xA3C0EFF1uL) ;
     if (cmd!=ack_buf[xxx-1])
@@ -192,7 +193,6 @@ FTDI_SPI_retval FTDI_SPI_open(FTDI_SPI_h* p_handle, const FTDI_SPI_open_param* p
     //   error(0x9A43C17FuL) ;
 
     // Моя самодеятельность
-    // FT_STATUS ftStatus = FT_OpenEx("/dev/ttuUSB0",FT_OPEN_BY_SERIAL_NUMBER,&ft_h);
     FT_STATUS ftStatus = FT_Open(param->inst_no, &ft_h);
     if (FT_OK != ftStatus)
     {
@@ -205,6 +205,8 @@ FTDI_SPI_retval FTDI_SPI_open(FTDI_SPI_h* p_handle, const FTDI_SPI_open_param* p
 
     if (FTDI_SPI_retval_ok != (retval = spi_inital(ft_h)))
       break ; 
+
+    // Тут возникает ошибка
     if (FTDI_SPI_retval_ok != (retval = check_echo(ft_h, 0xAA)))
       break ;
     if (FTDI_SPI_retval_ok != (retval = check_echo(ft_h, 0xAB)))

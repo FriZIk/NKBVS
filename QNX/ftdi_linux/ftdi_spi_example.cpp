@@ -508,7 +508,7 @@ static int my_test()
     //param.inst_no = 2 ; // ����� C // ???
     //param.inst_no = 3 ; // ����� D // ???
     param.cs_bit  = 3 ;
-
+        
     if (FTDI_SPI_retval_ok != (retval = FTDI_SPI_open(
       &handle,&param
     ))) break ;
