@@ -81,7 +81,7 @@ static FTDI_SPI_retval check_echo(FT_HANDLE ftHandle, uint_least8_t cmd)
       printf("\n");
     }
 
-    usleep(50) ;
+    usleep(1000) ;
 
     // Количество байт в очереди приёма
     if (FT_OK != FT_GetQueueStatus(ftHandle, &xxx))
