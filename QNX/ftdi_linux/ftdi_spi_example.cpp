@@ -302,47 +302,47 @@ int main()
     usleep(100) ;
   }
 
-  return my_test() ;
+  my_test() ;
 
-  ftStatus = FT_Open(0,&ftdiHandle);
-  if (ftStatus != FT_OK)
-  {
-    printf("Can't open FT2232H device! \n");
-    return 1;
-  }
-  else // Port opened successfully
-    printf("Successfully open FT2232H device! \n");
+  // ftStatus = FT_Open(0,&ftdiHandle);
+  // if (ftStatus != FT_OK)
+  // {
+  //   printf("Can't open FT2232H device! \n");
+  //   return 1;
+  // }
+  // else // Port opened successfully
+  //   printf("Successfully open FT2232H device! \n");
 
-  if(SPI_Initial(ftdiHandle) == TRUE)
-  {
-    // byte ReadByte = 0;
-    //initial output buffer
-    for(i=0;i<MemSize;i++)
-      DataOutBuffer[i] = i;
-    //Purge USB received buffer first before read operation
-    ftStatus = FT_GetQueueStatus(ftdiHandle, &dwNumInputBuffer); // Get the number of bytes in the device receive buffer
-    if ((ftStatus == FT_OK) && (dwNumInputBuffer > 0))
-      FT_Read(ftdiHandle, InputBuffer, dwNumInputBuffer, &dwNumBytesRead); //Read out all the data from receive buffer
-    WriteEECmd(ftdiHandle, WREN);
-    WriteEECmd(ftdiHandle, ERAL);
-    usleep(20);
+  // if(SPI_Initial(ftdiHandle) == TRUE)
+  // {
+  //   // byte ReadByte = 0;
+  //   //initial output buffer
+  //   for(i=0;i<MemSize;i++)
+  //     DataOutBuffer[i] = i;
+  //   //Purge USB received buffer first before read operation
+  //   ftStatus = FT_GetQueueStatus(ftdiHandle, &dwNumInputBuffer); // Get the number of bytes in the device receive buffer
+  //   if ((ftStatus == FT_OK) && (dwNumInputBuffer > 0))
+  //     FT_Read(ftdiHandle, InputBuffer, dwNumInputBuffer, &dwNumBytesRead); //Read out all the data from receive buffer
+  //   WriteEECmd(ftdiHandle, WREN);
+  //   WriteEECmd(ftdiHandle, ERAL);
+  //   usleep(20);
 
-    for(i=0;i<MemSize;i++)
-    {
-      SPI_WriteByte2RandomAddr(ftdiHandle, i,DataOutBuffer[i]);
-      usleep(2);
-      printf("Write data %d to address %d\n",DataOutBuffer[i],i);
-    }
-    usleep(20);
-    for(i=0;i<MemSize;i++)
-    {
-      SPI_ReadByteRandomAddr(ftdiHandle, i,&DataInBuffer[i]);
-      printf("Read data from address %d = %d\n",i,DataInBuffer[i]);
-    }
-    getchar();//wait here until we get a key press.
-  }
-  FT_Close(ftdiHandle);
-  return 0;
+  //   for(i=0;i<MemSize;i++)
+  //   {
+  //     SPI_WriteByte2RandomAddr(ftdiHandle, i,DataOutBuffer[i]);
+  //     usleep(2);
+  //     printf("Write data %d to address %d\n",DataOutBuffer[i],i);
+  //   }
+  //   usleep(20);
+  //   for(i=0;i<MemSize;i++)
+  //   {
+  //     SPI_ReadByteRandomAddr(ftdiHandle, i,&DataInBuffer[i]);
+  //     printf("Read data from address %d = %d\n",i,DataInBuffer[i]);
+  //   }
+  //   getchar();//wait here until we get a key press.
+  // }
+  // FT_Close(ftdiHandle);
+  // return 0;
 }
 
 

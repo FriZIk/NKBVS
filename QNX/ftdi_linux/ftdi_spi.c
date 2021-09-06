@@ -55,6 +55,7 @@ void FTDI_SPI_close(FTDI_SPI_h handle)
 
 static FTDI_SPI_retval check_echo(FT_HANDLE ftHandle, uint_least8_t cmd)
 {
+  printf("-----------------------------\nCheck echo \n"); 
   FTDI_SPI_retval retval = FTDI_SPI_retval_ok ; 
 
   #define error(x) { retval = x ; break ; }
@@ -66,27 +67,56 @@ static FTDI_SPI_retval check_echo(FT_HANDLE ftHandle, uint_least8_t cmd)
 
     // Send off the BAD commands
     cmd_buf[cnt++] = cmd ;
+
+    // Шлём байты, получаем их количество
     if (FT_OK != FT_Write(ftHandle,cmd_buf,cnt,&dwNumBytesSent))
-      error(0x82A64B78uL); 
+    {
+      error(0x82A64B78uL);
+    }
+    else 
+    {
+      printf("dwNumBytesSent:%d\nЗаписанный буфер:",dwNumBytesSent); 
+      for(int i = 0; i < 0x4;i++)
+        printf("%d ",cmd_buf[i]);
+      printf("\n");
+    }
 
     usleep(50) ;
 
+    // Количество байт в очереди приёма
     if (FT_OK != FT_GetQueueStatus(ftHandle, &xxx))
+    {
       error(0x7F5F6C4BuL);
+    }
+    else printf("xxx:%d\n",xxx);
 
-    //Read out the data from input buffer
+    // Читаем байты, получаем количество
     if (FT_OK != FT_Read(ftHandle,ack_buf,xxx,&dwNumBytesRead))
-      error(0x132072D1uL); 
-
+    {
+      error(0x132072D1uL);
+    }
+    else 
+    {
+      printf("dwNumBytesRead:%d\n",dwNumBytesRead);
+      for(int i = 0; i < 0x4;i++)
+        printf("%d ",ack_buf[i]);
+      printf("\n");
+    }
+    // Сравниваем принятое и полученное
     if (xxx!=dwNumBytesRead)
+    {
       error(0x4470A118uL) ;
+    }
 
     // Ошибка
     #if 1 // другие команды :-(
     if (FTDI_BAD_ACK!=ack_buf[xxx-2])
       error(0xA3C0EFF1uL) ;
+
+    // 0xAA(170) != ack_buff
     if (cmd!=ack_buf[xxx-1])
       error(0xD82341D0uL) ;
+    printf("cmd:%d\nack_buf[%d]:%d\n",cmd,xxx-1,ack_buf[xxx-1]);
     #endif
 
     //if (!((2==dwNumBytesRead) && (FTDI_BAD_ACK==ack_buf[0]) && (cmd==ack_buf[1])))
