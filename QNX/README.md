@@ -379,3 +379,37 @@ BAR - 4[MEM] = 1048576. Вот так, теперь надо как-то под�
 	https://stackoverflow.com/questions/23804826/program-running-on-qnx-momentics-giving-error-undefined-references
 	https://community.rti.com/forum-topic/qnx-641-c-link-error
 	https://discourse.cmake.org/t/qnx-cmake-build/1309/2
+	
+```
+#include <stdio.h>
+#include <stdlib.h>
+#include <hw/spi-master.h>
+
+int main(void)
+{
+	puts("Let's write to SPI!!!\n");
+	int fd = spi_open("/dev/spi0");
+
+	// Check connection
+	if(fd == -1)
+	{
+		puts("Error with SPI connection");
+		return 0;
+	}
+	puts("SPI has been opened successfully\n");
+
+	// Read from SPI
+	void *ibuf;
+	int ibuf_len = 10;
+	spi_read(fd, SPI_DEV_LOCK, ibuf, ibuf_len);
+
+    // Write in SPI
+    void *obuf;
+    int obuf_len = 10;
+    spi_write(fd, SPI_DEV_LOCK, obuf, obuf_len);
+
+	spi_close(fd);
+	return EXIT_SUCCESS;
+}
+
+```
