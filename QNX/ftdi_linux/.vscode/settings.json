@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "ftdi_spi.h": "c",
+        "type_traits": "cpp",
+        "iostream": "cpp"
+    }
+}
